@@ -1,0 +1,6 @@
+*.pyd
+*.dll
+*.exe
+.idea/*
+*.pth
+venv/*
