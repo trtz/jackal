@@ -4,3 +4,4 @@
 .idea/*
 *.pth
 venv/*
+__pycache__
