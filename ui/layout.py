@@ -18,12 +18,12 @@ class Ui_Dialog(object):
         self.image_right = QtWidgets.QGraphicsView(Dialog)
         self.image_right.setGeometry(QtCore.QRect(580, 10, 512, 512))
         self.image_right.setObjectName("image_right")
-        self.toolButton = QtWidgets.QToolButton(Dialog)
-        self.toolButton.setGeometry(QtCore.QRect(100, 560, 25, 19))
-        self.toolButton.setObjectName("toolButton")
-        self.pushButton = QtWidgets.QPushButton(Dialog)
-        self.pushButton.setGeometry(QtCore.QRect(70, 600, 75, 23))
-        self.pushButton.setObjectName("pushButton")
+        self.open_button_left = QtWidgets.QPushButton(Dialog)
+        self.open_button_left.setGeometry(QtCore.QRect(10, 540, 141, 23))
+        self.open_button_left.setObjectName("open_button_left")
+        self.open_button_right = QtWidgets.QPushButton(Dialog)
+        self.open_button_right.setGeometry(QtCore.QRect(580, 540, 161, 23))
+        self.open_button_right.setObjectName("open_button_right")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -31,6 +31,6 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.toolButton.setText(_translate("Dialog", "..."))
-        self.pushButton.setText(_translate("Dialog", "PushButton"))
+        self.open_button_left.setText(_translate("Dialog", "Open left image"))
+        self.open_button_right.setText(_translate("Dialog", "Open right image"))
 

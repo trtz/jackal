@@ -33,30 +33,30 @@
     </rect>
    </property>
   </widget>
-  <widget class="QToolButton" name="toolButton">
+  <widget class="QPushButton" name="open_button_left">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>560</y>
-     <width>25</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>...</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton">
-   <property name="geometry">
-    <rect>
-     <x>70</x>
-     <y>600</y>
-     <width>75</width>
+     <x>10</x>
+     <y>540</y>
+     <width>141</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
-    <string>PushButton</string>
+    <string>Open left image</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="open_button_right">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>540</y>
+     <width>161</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Open right image</string>
    </property>
   </widget>
  </widget>
