@@ -1,10 +1,12 @@
+from PIL import Image
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QFileDialog, QLabel
 
 from src.grayscale import grayscale
-from src.load import save, get_pixmap, LEFT, RIGHT
+from src.load import save, LEFT, RIGHT
 from src.psnr import psnr
+from src.ycbcr import ycbcr1, fuck, to_rgb
 
 
 class Ui_Dialog(object):
@@ -55,6 +57,10 @@ class Ui_Dialog(object):
         self.cr_button.setGeometry(QtCore.QRect(340, 570, 50, 23))
         self.cr_button.setObjectName('cr_button')
 
+        self.ycbcr_to_rgb = QtWidgets.QPushButton(Dialog)
+        self.ycbcr_to_rgb.setGeometry(QtCore.QRect(410, 570, 150, 23))
+        self.ycbcr_to_rgb.setObjectName('ycbcr_to_rgb')
+
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
@@ -70,29 +76,35 @@ class Ui_Dialog(object):
         self.to_grayscale_button2.setText(_translate("Dialog", "To grayscale 2"))
         self.psnr_button.setText(_translate("Dialog", "PSNR"))
         self.y_button.setText(_translate("Dialog", 'Y'))
+        self.cb_button.setText(_translate("Dialog", 'Cb'))
+        self.cr_button.setText(_translate("Dialog", 'Cr'))
+        self.ycbcr_to_rgb.setText(_translate("Dialog", 'RGB->YCbCr->RGB'))
 
         self.open_button_left.clicked.connect(lambda: self.handle_open_file(True))
         self.open_button_right.clicked.connect(lambda: self.handle_open_file(False))
         self.to_grayscale_button.clicked.connect(lambda: self.to_grayscale(1))
         self.to_grayscale_button2.clicked.connect(lambda: self.to_grayscale(2))
         self.psnr_button.clicked.connect(lambda: self.psnr())
-        self.y_button.clicked.connect(lambda: self.y())
-        self.cb_button.clicked.connect(lambda: self.cb())
-        self.cr_button.clicked.connect(lambda: self.cr())
+        self.y_button.clicked.connect(lambda: self.ycbcr(0))
+        self.cb_button.clicked.connect(lambda: self.ycbcr(1))
+        self.cr_button.clicked.connect(lambda: self.ycbcr(2))
+        self.ycbcr_to_rgb.clicked.connect(lambda: self.ycbcr_to_rgb1())
 
-    def y(self):
-        pass
+    def ycbcr_to_rgb1(self):
+        img = Image.open(LEFT).load()
+        to_rgb(img)
+        self.update_img(False)
 
-    def cb(self):
-        pass
-
-    def cr(self):
-        pass
+    def ycbcr(self, mode):
+        res = ycbcr1(LEFT)
+        curr = [[int(res[j][i][mode]) for i in range(512)] for j in range(512)]
+        fuck(curr)
+        self.update_img(False)
 
     def psnr(self):
         res = psnr(LEFT, RIGHT)
         self.psnr_button.setText('PSNR = ' + str(res))
-    
+
     def handle_open_file(self, left: bool):
         fname = QFileDialog.getOpenFileName(self, 'Open image', '')[0]
         self.set_image(fname, left)
