@@ -10,5 +10,10 @@ def save(img: QPixmap, left: bool):
     img.save(path)
 
 
-def get_pixmap(left: bool):
+def get_pixmap_from_store(left: bool):
     return QPixmap(LEFT if left else RIGHT)
+
+
+def get_pixmap(path: str):
+    return QPixmap(path)
+

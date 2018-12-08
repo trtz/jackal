@@ -1,4 +1,3 @@
-import cv2
 import numpy as np
 from PIL import Image
 
@@ -13,13 +12,13 @@ def ycbcr_(R, G, B):
 
 
 def ycbcr1(path1):
-    img1 = cv2.imread(path1)
+    img1 = Image.open(path1).load()
     res = [[0 for i in range(512)] for j in range(512)]
     for i in range(512):
         for j in range(512):
-            x1 = img1[i][j]
+            x1 = img1[i, j]
             y1, cb1, cr1 = ycbcr_(*x1)
-            res[i][j] = [y1, cb1, cr1]
+            res[j][i] = [y1, cb1, cr1]
     return res
 
 
@@ -33,7 +32,7 @@ def to_rgb(arr):
     res = [[0 for i in range(512)] for j in range(512)]
     for i in range(512):
         for j in range(512):
-            temp = arr[i,j]
+            temp = arr[i, j]
             temp1 = ycbcr_(*temp)
             res[j][i] = to_rgb_(*temp1)
     fuck(res)
@@ -41,6 +40,6 @@ def to_rgb(arr):
 
 def to_rgb_(Y, Cb, Cr):
     R = Y + (256 / 183) * (Cr - 128)
-    G = Y - (5329/15481) * (Cb - 128) - (11103/15481) * (Cr - 128)
-    B = Y + (256/144) * (Cb - 128)
+    G = Y - (5329 / 15481) * (Cb - 128) - (11103 / 15481) * (Cr - 128)
+    B = Y + (256 / 144) * (Cb - 128)
     return R, G, B
