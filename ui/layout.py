@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QFileDialog, QLabel
 from src.grayscale import grayscale
 from src.load import save, LEFT, RIGHT
 from src.psnr import psnr
+from src.quant import urgb343_, urgb442_
 from src.ycbcr import ycbcr1, fuck, to_rgb
 
 
@@ -61,6 +62,14 @@ class Ui_Dialog(object):
         self.ycbcr_to_rgb.setGeometry(QtCore.QRect(410, 570, 150, 23))
         self.ycbcr_to_rgb.setObjectName('ycbcr_to_rgb')
 
+        self.urgb343 = QtWidgets.QPushButton(Dialog)
+        self.urgb343.setGeometry(QtCore.QRect(580, 570, 80, 23))
+        self.urgb343.setObjectName('urgb343')
+
+        self.urgb442 = QtWidgets.QPushButton(Dialog)
+        self.urgb442.setGeometry(QtCore.QRect(680, 570, 80, 23))
+        self.urgb442.setObjectName('urgb343')
+
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
@@ -79,6 +88,7 @@ class Ui_Dialog(object):
         self.cb_button.setText(_translate("Dialog", 'Cb'))
         self.cr_button.setText(_translate("Dialog", 'Cr'))
         self.ycbcr_to_rgb.setText(_translate("Dialog", 'RGB->YCbCr->RGB'))
+        self.urgb343.setText(_translate("Dialog", 'URGB343'))
 
         self.open_button_left.clicked.connect(lambda: self.handle_open_file(True))
         self.open_button_right.clicked.connect(lambda: self.handle_open_file(False))
@@ -89,6 +99,20 @@ class Ui_Dialog(object):
         self.cb_button.clicked.connect(lambda: self.ycbcr(1))
         self.cr_button.clicked.connect(lambda: self.ycbcr(2))
         self.ycbcr_to_rgb.clicked.connect(lambda: self.ycbcr_to_rgb1())
+        self.urgb343.clicked.connect(lambda: self.urgb343_())
+        self.urgb442.clicked.connect(lambda: self.urgb442_())
+
+    def urgb343_(self):
+        img = Image.open(LEFT).load()
+        img1 = urgb343_(img)
+        fuck(img1)
+        self.update_img(False)
+
+    def urgb442_(self):
+        img = Image.open(LEFT).load()
+        img1 = urgb442_(img)
+        fuck(img1)
+        self.update_img(False)
 
     def ycbcr_to_rgb1(self):
         img = Image.open(LEFT).load()
