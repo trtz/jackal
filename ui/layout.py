@@ -138,26 +138,16 @@ class Ui_Dialog(object):
         pass
 
     def mcut_(self):
-        cubes = median_cut(Image.open(LEFT), 6)
+        cubes = median_cut(Image.open(LEFT), 1024)
         res = [[[] for i in range(512)] for j in range(512)]
         img1 = Image.open(LEFT).load()
-        dictr = {i: set() for i in range(256)}
-        dictg = {i: set() for i in range(256)}
-        dictb = {i: set() for i in range(256)}
-        for cube in cubes:
-            for color in cube.colors_:
-                dictr[color[0]].add(cube.average)
-                dictg[color[1]].add(cube.average)
-                dictb[color[2]].add(cube.average)
         for i in range(512):
             for j in range(512):
                 pixel = (img1[i, j][0], img1[i, j][1], img1[i, j][2])
-                rs = dictr[pixel[0]]
-                gs = dictg[pixel[1]]
-                bs = dictb[pixel[2]]
-                inters = rs.intersection(gs).intersection(bs)
-                value = inters.pop()
-                res[j][i] = value
+                for cube in cubes:
+                    if pixel in cube.colors_:
+                        res[j][i] = cube.average
+                        break
         fuck(res)
         self.update_img(False)
 
