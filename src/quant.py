@@ -1,3 +1,6 @@
+from src.ycbcr import ycbcr2, to_rgb, to_rgb_
+
+
 def urgb343_(pixels):
     res = [[0 for i in range(512)] for j in range(512)]
     for i in range(512):
@@ -21,6 +24,18 @@ def urgb442_(pixels):
             g = cut(to_binary(g), 4)
             b = cut(to_binary(b), 2)
             res[j][i] = [r, g, b]
+    return res
+
+
+def ycbcrq_(pixels, x1, y1, z1):
+    res = ycbcr2(pixels)
+    for i in range(512):
+        for j in range(512):
+            y, cb, cr = res[j][i]
+            y = cut(to_binary(int(y)), x1)
+            cb = cut(to_binary(int(cb)), y1)
+            cr = cut(to_binary(int(cr)), z1)
+            res[j][i] = to_rgb_(y, cb, cr)
     return res
 
 

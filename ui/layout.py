@@ -5,8 +5,9 @@ from PyQt5.QtWidgets import QFileDialog, QLabel
 
 from src.grayscale import grayscale
 from src.load import save, LEFT, RIGHT
+from src.mcut.mcut import median_cut
 from src.psnr import psnr
-from src.quant import urgb343_, urgb442_
+from src.quant import urgb343_, urgb442_, ycbcrq_
 from src.ycbcr import ycbcr1, fuck, to_rgb
 
 
@@ -68,7 +69,27 @@ class Ui_Dialog(object):
 
         self.urgb442 = QtWidgets.QPushButton(Dialog)
         self.urgb442.setGeometry(QtCore.QRect(680, 570, 80, 23))
-        self.urgb442.setObjectName('urgb343')
+        self.urgb442.setObjectName('urgb442')
+
+        self.ycbcrq1 = QtWidgets.QPushButton(Dialog)
+        self.ycbcrq1.setGeometry(QtCore.QRect(780, 570, 80, 23))
+        self.ycbcrq1.setObjectName('ycbcrq1')
+
+        self.ycbcrq2 = QtWidgets.QPushButton(Dialog)
+        self.ycbcrq2.setGeometry(QtCore.QRect(880, 570, 80, 23))
+        self.ycbcrq2.setObjectName('ycbcrq2')
+
+        self.ycbcrq3 = QtWidgets.QPushButton(Dialog)
+        self.ycbcrq3.setGeometry(QtCore.QRect(980, 570, 80, 23))
+        self.ycbcrq3.setObjectName('ycbcrq3')
+
+        self.gla = QtWidgets.QPushButton(Dialog)
+        self.gla.setGeometry(QtCore.QRect(200, 600, 50, 23))
+        self.gla.setObjectName('ycbcrq3')
+
+        self.mcut = QtWidgets.QPushButton(Dialog)
+        self.mcut.setGeometry(QtCore.QRect(280, 600, 50, 23))
+        self.mcut.setObjectName('mcut')
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -89,6 +110,12 @@ class Ui_Dialog(object):
         self.cr_button.setText(_translate("Dialog", 'Cr'))
         self.ycbcr_to_rgb.setText(_translate("Dialog", 'RGB->YCbCr->RGB'))
         self.urgb343.setText(_translate("Dialog", 'URGB343'))
+        self.urgb442.setText(_translate("Dialog", 'URGB442'))
+        self.ycbcrq1.setText(_translate("Dialog", 'YCbCr244'))
+        self.ycbcrq2.setText(_translate("Dialog", 'YCbCr523'))
+        self.ycbcrq3.setText(_translate("Dialog", 'YCbCr532'))
+        self.gla.setText(_translate("Dialog", 'GLA'))
+        self.mcut.setText(_translate("Dialog", 'MC'))
 
         self.open_button_left.clicked.connect(lambda: self.handle_open_file(True))
         self.open_button_right.clicked.connect(lambda: self.handle_open_file(False))
@@ -101,10 +128,48 @@ class Ui_Dialog(object):
         self.ycbcr_to_rgb.clicked.connect(lambda: self.ycbcr_to_rgb1())
         self.urgb343.clicked.connect(lambda: self.urgb343_())
         self.urgb442.clicked.connect(lambda: self.urgb442_())
+        self.ycbcrq1.clicked.connect(lambda: self.ycbcrq(2, 4, 4))
+        self.ycbcrq2.clicked.connect(lambda: self.ycbcrq(5, 2, 3))
+        self.ycbcrq3.clicked.connect(lambda: self.ycbcrq(5, 3, 2))
+        self.gla.clicked.connect(lambda: self.gla_())
+        self.mcut.clicked.connect(lambda: self.mcut_())
+
+    def gla_(self):
+        pass
+
+    def mcut_(self):
+        cubes = median_cut(Image.open(LEFT), 6)
+        res = [[[] for i in range(512)] for j in range(512)]
+        img1 = Image.open(LEFT).load()
+        dictr = {i: set() for i in range(256)}
+        dictg = {i: set() for i in range(256)}
+        dictb = {i: set() for i in range(256)}
+        for cube in cubes:
+            for color in cube.colors_:
+                dictr[color[0]].add(cube.average)
+                dictg[color[1]].add(cube.average)
+                dictb[color[2]].add(cube.average)
+        for i in range(512):
+            for j in range(512):
+                pixel = (img1[i, j][0], img1[i, j][1], img1[i, j][2])
+                rs = dictr[pixel[0]]
+                gs = dictg[pixel[1]]
+                bs = dictb[pixel[2]]
+                inters = rs.intersection(gs).intersection(bs)
+                value = inters.pop()
+                res[j][i] = value
+        fuck(res)
+        self.update_img(False)
 
     def urgb343_(self):
         img = Image.open(LEFT).load()
         img1 = urgb343_(img)
+        fuck(img1)
+        self.update_img(False)
+
+    def ycbcrq(self, x, y, z):
+        img = Image.open(LEFT).load()
+        img1 = ycbcrq_(img, x, y, z)
         fuck(img1)
         self.update_img(False)
 

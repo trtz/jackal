@@ -11,8 +11,7 @@ def ycbcr_(R, G, B):
     return Y, Cb, Cr
 
 
-def ycbcr1(path1):
-    img1 = Image.open(path1).load()
+def ycbcr2(img1):
     res = [[0 for i in range(512)] for j in range(512)]
     for i in range(512):
         for j in range(512):
@@ -20,6 +19,11 @@ def ycbcr1(path1):
             y1, cb1, cr1 = ycbcr_(*x1)
             res[j][i] = [y1, cb1, cr1]
     return res
+
+
+def ycbcr1(path1):
+    img1 = Image.open(path1).load()
+    return ycbcr2(img1)
 
 
 def fuck(arr):
@@ -42,4 +46,4 @@ def to_rgb_(Y, Cb, Cr):
     R = Y + (256 / 183) * (Cr - 128)
     G = Y - (5329 / 15481) * (Cb - 128) - (11103 / 15481) * (Cr - 128)
     B = Y + (256 / 144) * (Cb - 128)
-    return R, G, B
+    return int(R), int(G), int(B)
