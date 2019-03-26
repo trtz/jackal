@@ -1,8 +1,8 @@
+from math import log
+
 import cv2
 import numpy as np
-from scipy.cluster.vq import vq, kmeans, whiten
-from math import log
-import scipy.misc
+from scipy.cluster.vq import vq, kmeans
 
 from src.load import RIGHT
 from src.ycbcr import save_arr_to_right
