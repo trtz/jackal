@@ -11,6 +11,7 @@ def get_colors(image):
 def median_cut(image, num_colors):
     colors = get_colors(image)
     cubes = [ColorCube(*colors)]
+    mapping = {color: cubes[0] for color in colors}
     while len(cubes) < num_colors:
         global_max_size = 0
 
@@ -24,9 +25,9 @@ def median_cut(image, num_colors):
                 max_cube = index
 
         split_box = cubes[max_cube]
-        cube_a, cube_b = split_box.split(max_dim)
+        cube_a, cube_b = split_box.split(max_dim, mapping)
         cubes = cubes[:max_cube] + [cube_a, cube_b] + cubes[max_cube + 1:]
-    return cubes
+    return cubes, mapping
 
 
 class ColorCube(object):
@@ -89,11 +90,18 @@ class ColorCube(object):
         self.bmin = min(col_b)
         self.bmax = max(col_b)
 
-    def split(self, axis):
+    def split(self, axis, mapping):
         self.resize()
         self._colors = sorted(self.colors, key=itemgetter(axis))
         med_idx = len(self.colors) // 2
+        left = self.colors[:med_idx]
+        right = self.colors[med_idx:]
+        cubeleft = ColorCube(*left)
+        cuberight = ColorCube(*right)
+        for c in left:
+            mapping[c] = cubeleft
+        for c in right:
+            mapping[c] = cuberight
         return (
-            ColorCube(*self.colors[:med_idx]),
-            ColorCube(*self.colors[med_idx:]
-                      ))
+            cubeleft,
+            cuberight)

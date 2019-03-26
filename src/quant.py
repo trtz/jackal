@@ -40,6 +40,11 @@ def ycbcrq_(pixels, x1, y1, z1):
 
 
 def to_binary(number):
+    number = int(number)
+    if number < 0:
+        number = 0
+    if number > 255:
+        number = 255
     bin8 = lambda x: ''.join(reversed([str((x >> i) & 1) for i in range(8)]))
     str_arr = bin8(number)
     num_arr = [int(i) for i in str_arr]
